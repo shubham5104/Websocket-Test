@@ -11,12 +11,12 @@ stompClient.onConnect = (frame) => {
 };
 
 stompClient.onWebSocketError = (error) => {
-    console.error('Error with websocket', error);
+    console.error('WebSocket error', error);
 };
 
 stompClient.onStompError = (frame) => {
-    console.error('Broker reported error: ' + frame.headers['message']);
-    console.error('Additional details: ' + frame.body);
+    console.error('Broker error: ' + frame.headers['message']);
+    console.error('Details: ' + frame.body);
 };
 
 function setConnected(connected) {
@@ -24,11 +24,10 @@ function setConnected(connected) {
     $("#disconnect").prop("disabled", !connected);
     if (connected) {
         $("#conversation").show();
-    }
-    else {
+    } else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
+    $("#messages").html("");
 }
 
 function connect() {
@@ -44,17 +43,17 @@ function disconnect() {
 function sendName() {
     stompClient.publish({
         destination: "/app/hello",
-        body: JSON.stringify({'name': $("#name").val()})
+        body: JSON.stringify({ 'name': $("#name").val() })
     });
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    $("#messages").append(`<div>${message}</div>`);
 }
 
 $(function () {
     $("form").on('submit', (e) => e.preventDefault());
-    $( "#connect" ).click(() => connect());
-    $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendName());
+    $("#connect").click(() => connect());
+    $("#disconnect").click(() => disconnect());
+    $("#send").click(() => sendName());
 });
